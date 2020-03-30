@@ -1,15 +1,32 @@
-import { ctx } from './Content';
 import { Mouse } from './Mouse';
+import { Screen } from './Screen';
+import { info, canvas } from './Content';
 
-function main() {
-  ctx.viewport(0, 0, ctx.drawingBufferWidth, ctx.drawingBufferHeight);
-  ctx.clearColor(0.0, 0.5, 0.0, 1.0);
-  // Clear the context with the newly set color. This is
-  // the function call that actually does the drawing.
-  ctx.clear(ctx.COLOR_BUFFER_BIT);
-  console.log(ctx);
-  // setInterval(() => { console.log(Mouse.pos); });
-  console.log(Mouse.pos);
+class Main {
+  constructor() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  init() {
+    let fps = 0;
+    let date = new Date();
+    setInterval(() => {
+      fps++;
+      this.setInfo();
+    }, 100);
+    Screen.setBackground();
+  }
+
+  setInfo() {
+    const textInnerInfo = `
+      x: ${Mouse.x.toString().padStart(4, '0')}, y: ${Mouse.y.toString().padStart(4, '0')} <br>
+    `;
+    if (info.innerHTML !== textInnerInfo)
+      info.innerHTML = textInnerInfo;
+  }
 }
 
-main();
+const main = new Main();
+
+main.init();
