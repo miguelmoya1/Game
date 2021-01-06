@@ -5,28 +5,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Game</title>
-  <style>
-    html,
-    body,
-    canvas {
-      margin: 0;
-      overflow: hidden;
-    }
-
-    #info {
-      position: absolute;
-      color: white;
-      margin: 1rem;
-      padding: 1rem;
-      background-color: rgba(255, 255, 255, .1);
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="./css/style.css">
   <script type="module" src="./dist/bundle.js"></script>
 </head>
 
 <body>
   <div id="info"></div>
-  <canvas id="canvas"></canvas>
+  <div id="fps"></div>
+  <div id="player">
+    <div id="totalLife">
+      <div id="life"></div>
+    </div>
+  </div>
+  <div class="container">
+    <canvas id="canvas"></canvas>
+  </div>
 </body>
 
 </html>

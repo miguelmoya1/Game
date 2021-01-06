@@ -1,29 +1,46 @@
-import { Mouse } from './Mouse';
-import { Screen } from './Screen';
-import { info, canvas } from './Content';
+import { Mouse } from "./Mouse";
+import { info, canvas, fps } from "./Content/Content";
+import { Player } from "./Player/Player";
 
 class Main {
+  fps = 0;
+  players: Player[] = [];
+
   constructor() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = 928 * 2;
+    canvas.height = 793;
   }
 
-  init() {
-    let fps = 0;
-    let date = new Date();
-    setInterval(() => {
-      fps++;
-      this.setInfo();
-    }, 100);
-    Screen.setBackground();
+  async init() {
+    this.players.push(
+      await new Player().init("../assets/Pink_Monster/Pink_Monster.png")
+    );
+    this.setFPS();
+    // setInterval(() => this.draw());
+    this.draw();
+  }
+
+  draw() {
+    this.fps++;
+    this.setInfo();
+    this.players.forEach((p) => p.draw());
+    requestAnimationFrame(() => this.draw());
   }
 
   setInfo() {
     const textInnerInfo = `
-      x: ${Mouse.x.toString().padStart(4, '0')}, y: ${Mouse.y.toString().padStart(4, '0')} <br>
+    x: ${Mouse.x.toString().padStart(4, "0")}, y: 
+    ${Mouse.y.toString().padStart(4, "0")} <br>
     `;
-    if (info.innerHTML !== textInnerInfo)
-      info.innerHTML = textInnerInfo;
+    if (info.innerHTML !== textInnerInfo) info.innerHTML = textInnerInfo;
+  }
+
+  setFPS() {
+    fps.innerHTML = `fps: ${this.fps}`;
+    setInterval(() => {
+      fps.innerHTML = `fps: ${this.fps}`;
+      this.fps = 0;
+    }, 1000);
   }
 }
 
