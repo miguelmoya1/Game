@@ -1,4 +1,4 @@
-import { Image } from "../Image/Image";
+import { Image } from '../Image/Image';
 
 export class Player {
   public id: string;
@@ -9,7 +9,7 @@ export class Player {
   private width = 0;
   private height = 0;
   private speed = 8;
-  private floor = 895;
+  private floor = 995;
   private firstJump = 0;
   private jumpSize = 20;
   private jumping = false;
@@ -28,7 +28,7 @@ export class Player {
     this.height = this.image.height;
     this.width = this.image.width;
     this.image.id = this.id;
-    this.image.style.position = "absolute";
+    this.image.style.position = 'absolute';
     this.isInit = true;
     return this;
   }
@@ -37,13 +37,13 @@ export class Player {
     this.id = id;
     this.hasMoveLogic = hasMoveLogic;
     if (this.hasMoveLogic) {
-      document.addEventListener("keydown", (e) => {
+      document.addEventListener('keydown', (e) => {
         let key: number = e.key as any;
         this.map[key] = true;
         this.moveLogic();
       });
 
-      document.addEventListener("keyup", (e) => {
+      document.addEventListener('keyup', (e) => {
         if (e.key in this.map) {
           this.moveLogic();
           this.map[e.key as any] = false;
@@ -95,7 +95,7 @@ export class Player {
 
   private jumpPress() {
     if (!this.jumping) {
-      if (this.map["w"] || this.map[" "]) {
+      if (this.map['w'] || this.map[' ']) {
         this.jumping = true;
         this.firstJump = this.y;
         this.y -= this.speed;
@@ -104,13 +104,13 @@ export class Player {
   }
 
   private moveLeft() {
-    if (this.map["a"] && this.x >= 0) {
+    if (this.map['a'] && this.x >= 0) {
       this.x -= this.speed;
     }
   }
 
   private moveRight() {
-    if (this.map["d"] && this.x + this.width <= window.innerWidth) {
+    if (this.map['d'] && this.x + this.width <= window.innerWidth) {
       this.x += this.speed;
     }
   }

@@ -1,29 +1,28 @@
-import { Mouse } from "./Mouse";
-import { info, fps } from "./Content/Content";
-import { Player } from "./Player/Player";
-import service from "./roomService";
-import { runInThisContext } from "vm";
+import { Mouse } from './Mouse';
+import { info, fps } from './Content/Content';
+import { Player } from './Player/Player';
+import service from './roomService';
 
 class Main {
   fps = 0;
   players: Player[] = [];
-  room = service.room("game");
-  mainPlayerID = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+  room = service.room('game');
+  mainPlayerID = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
     /[xy]/g,
     function (c) {
       var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
+        v = c == 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     }
   );
 
-  mainPlayer: Player;
+  mainPlayer!: Player;
 
   constructor() {}
 
   async init() {
     this.mainPlayer = await new Player(this.mainPlayerID, true).init(
-      "../assets/Pink_Monster/Pink_Monster.png"
+      '../assets/Pink_Monster/Pink_Monster.png'
     );
     this.players.push(this.mainPlayer);
     this.setFPS();
@@ -32,14 +31,14 @@ class Main {
 
   setMultiplayerAndDrawMap() {
     this.room.then((room) => {
-      const map = room.map("players");
+      const map = room.map('players');
       room.subscribe(map, (obj) => {
         obj.players.forEach((p: { id: string }) => {
           if (p.id !== this.mainPlayerID) {
             const found = this.players.findIndex((pl) => pl.id === p.id) !== -1;
             if (!found) {
               const newPlayer = new Player(p.id);
-              newPlayer.init("../assets/Owlet_Monster/Owlet_Monster.png");
+              newPlayer.init('../assets/Owlet_Monster/Owlet_Monster.png');
               this.players.push(newPlayer);
             }
 
@@ -59,15 +58,15 @@ class Main {
       p.move();
     });
     if (this.fps % 5 === 0) {
-      map.set("players", this.players);
+      map.set('players', this.players);
     }
     requestAnimationFrame(() => this.draw(map));
   }
 
   setInfo() {
     const textInnerInfo = `
-    x: ${Mouse.x.toString().padStart(4, "0")}, y: 
-    ${Mouse.y.toString().padStart(4, "0")} <br>
+    x: ${Mouse.x.toString().padStart(4, '0')}, y: 
+    ${Mouse.y.toString().padStart(4, '0')} <br>
     `;
     if (info.innerHTML !== textInnerInfo) info.innerHTML = textInnerInfo;
   }
