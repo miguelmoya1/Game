@@ -1,10 +1,12 @@
 import { Mouse } from "./Mouse";
 import { info, canvas, fps } from "./Content/Content";
 import { Player } from "./Player/Player";
+import service from "./roomService";
 
 class Main {
   fps = 0;
   players: Player[] = [];
+  room = service.room("game");
 
   constructor() {
     canvas.width = 928 * 2;
@@ -13,18 +15,33 @@ class Main {
 
   async init() {
     this.players.push(
-      await new Player().init("../assets/Pink_Monster/Pink_Monster.png")
+      await new Player({}).init("../assets/Pink_Monster/Pink_Monster.png")
     );
     this.setFPS();
-    // setInterval(() => this.draw());
-    this.draw();
+    this.room.then((room) => {
+      const map = room.map("players");
+      room.subscribe(map, (obj) => {
+        this.players = obj.players.map((p) => {
+          const pl = new Player({ ...p });
+          if (!pl.isInit()) pl.init("../assets/Pink_Monster/Pink_Monster.png");
+          return pl;
+        });
+        console.log(this.players);
+      });
+      this.draw(map);
+    });
   }
 
-  draw() {
+  async draw(map: any) {
     this.fps++;
     this.setInfo();
-    this.players.forEach((p) => p.draw());
-    requestAnimationFrame(() => this.draw());
+    this.players.forEach(async (p) => {
+      p.draw();
+    });
+    if (this.fps % 5 === 0) {
+      map.set("players", this.players);
+    }
+    requestAnimationFrame(() => this.draw(map));
   }
 
   setInfo() {
