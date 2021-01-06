@@ -1,14 +1,15 @@
 import { Image } from "../Image/Image";
-import { ctx, canvas } from "../Content/Content";
 
 export class Player {
+  public id: string;
+  public hasMoveLogic = false;
   private life = 50;
   private x = 0;
   private y = 0;
   private width = 0;
   private height = 0;
   private speed = 8;
-  private floor = 695;
+  private floor = 895;
   private firstJump = 0;
   private jumpSize = 20;
   private jumping = false;
@@ -16,63 +17,58 @@ export class Player {
   private map: any = [];
   private image: HTMLImageElement;
 
+  public isInit = false;
+
   async init(url: string) {
-    this.image = await Image.loadImage(url);
-    // player.appendChild(this.image);
+    this.image = document.getElementById(this.id) as HTMLImageElement;
+    if (!this.image) {
+      this.image = await Image.loadImage(url);
+      document.body.appendChild(this.image);
+    }
     this.height = this.image.height;
     this.width = this.image.width;
+    this.image.id = this.id;
+    this.image.style.position = "absolute";
+    this.isInit = true;
     return this;
   }
 
-  isInit() {
-    return !!this.image;
-  }
+  constructor(id: string, hasMoveLogic = false) {
+    this.id = id;
+    this.hasMoveLogic = hasMoveLogic;
+    if (this.hasMoveLogic) {
+      document.addEventListener("keydown", (e) => {
+        let key: number = e.key as any;
+        this.map[key] = true;
+        this.moveLogic();
+      });
 
-  constructor({ ...args }: any) {
-    this.life = args.life || 50;
-    this.x = args.x || 0;
-    this.y = args.y || 0;
-    this.width = args.width || 0;
-    this.height = args.height || 0;
-    this.speed = args.speed || 8;
-    this.floor = args.floor || 695;
-    this.firstJump = args.firstJump || 0;
-    this.jumpSize = args.jumpSize || 20;
-    this.jumping = args.jumping || false;
-    this.fallingDown = args.fallingDown || false;
-    this.map = args.map || [];
-
-    document.addEventListener("keydown", (e) => {
-      let key: number = e.key as any;
-      this.map[key] = true;
-      this.move();
-    });
-
-    document.addEventListener("keyup", (e) => {
-      if (e.key in this.map) {
-        this.move();
-        this.map[e.key as any] = false;
-      }
-    });
+      document.addEventListener("keyup", (e) => {
+        if (e.key in this.map) {
+          this.moveLogic();
+          this.map[e.key as any] = false;
+        }
+      });
+    }
   }
 
   getImage() {
     return this.image;
   }
 
-  draw() {
-    if (this.jumping) {
-      this.jump();
-    } else if (!this.jumping && this.y <= this.floor) {
-      this.falling();
+  move() {
+    if (this.hasMoveLogic) {
+      if (this.jumping) {
+        this.jump();
+      } else if (!this.jumping && this.y <= this.floor) {
+        this.falling();
+      }
     }
-    ctx.clearRect(
-      this.x - this.speed * 3,
-      this.y - this.speed * 3,
-      this.width + this.speed * 5,
-      this.height + this.speed * 5
-    );
-    ctx.drawImage(this.image, this.x, this.y);
+    if (this.image) {
+      this.image.style.left = `${this.x}px`;
+      this.image.style.top = `${this.y}px`;
+    }
+
     this.setLife();
     return this;
   }
@@ -114,16 +110,30 @@ export class Player {
   }
 
   private moveRight() {
-    if (this.map["d"] && this.x + this.width <= canvas.width) {
+    if (this.map["d"] && this.x + this.width <= window.innerWidth) {
       this.x += this.speed;
     }
   }
 
-  private move() {
+  private moveLogic() {
     this.moveLeft();
     this.moveRight();
     if (!this.fallingDown) {
       this.jumpPress();
     }
+  }
+
+  public setVar({ ...args }) {
+    this.life = args.life || this.life;
+    this.x = args.x || this.x;
+    this.y = args.y || this.y;
+    this.width = args.width || this.width;
+    this.height = args.height || this.height;
+    this.speed = args.speed || this.speed;
+    this.floor = args.floor || this.floor;
+    this.firstJump = args.firstJump || this.firstJump;
+    this.jumpSize = args.jumpSize || this.jumpSize;
+    this.jumping = args.jumping || this.jumping;
+    this.fallingDown = args.fallingDown || this.fallingDown;
   }
 }

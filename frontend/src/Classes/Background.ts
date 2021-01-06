@@ -1,5 +1,4 @@
-import { Image } from '../Image/Image';
-import { ctx } from '../Content/Content';
+import { Image } from "../Image/Image";
 
 export class Background {
   private x = 0;
@@ -9,12 +8,11 @@ export class Background {
   public async init(url: string, x = 0, y = 0) {
     this.x = x;
     this.y = y;
-    this.image = await Image.loadImage(url);
+    // this.image = await Image.loadImage(url);
     return this.draw();
   }
 
   private async draw() {
-    ctx.drawImage(this.image, this.x, this.y);
     return this;
   }
 }

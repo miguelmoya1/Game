@@ -1,34 +1,54 @@
 import { Mouse } from "./Mouse";
-import { info, canvas, fps } from "./Content/Content";
+import { info, fps } from "./Content/Content";
 import { Player } from "./Player/Player";
 import service from "./roomService";
+import { runInThisContext } from "vm";
 
 class Main {
   fps = 0;
   players: Player[] = [];
   room = service.room("game");
+  mainPlayerID = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+    /[xy]/g,
+    function (c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    }
+  );
 
-  constructor() {
-    canvas.width = 928 * 2;
-    canvas.height = 793;
-  }
+  mainPlayer: Player;
+
+  constructor() {}
 
   async init() {
-    this.players.push(
-      await new Player({}).init("../assets/Pink_Monster/Pink_Monster.png")
+    this.mainPlayer = await new Player(this.mainPlayerID, true).init(
+      "../assets/Pink_Monster/Pink_Monster.png"
     );
+    this.players.push(this.mainPlayer);
     this.setFPS();
+    this.setMultiplayerAndDrawMap();
+  }
+
+  setMultiplayerAndDrawMap() {
     this.room.then((room) => {
       const map = room.map("players");
       room.subscribe(map, (obj) => {
-        this.players = obj.players.map((p) => {
-          const pl = new Player({ ...p });
-          if (!pl.isInit()) pl.init("../assets/Pink_Monster/Pink_Monster.png");
-          return pl;
+        obj.players.forEach((p: { id: string }) => {
+          if (p.id !== this.mainPlayerID) {
+            const found = this.players.findIndex((pl) => pl.id === p.id) !== -1;
+            if (!found) {
+              const newPlayer = new Player(p.id);
+              newPlayer.init("../assets/Owlet_Monster/Owlet_Monster.png");
+              this.players.push(newPlayer);
+            }
+
+            const player = this.players.find((pl) => pl.id === p.id);
+            player.setVar({ ...p });
+          }
         });
-        console.log(this.players);
       });
-      this.draw(map);
+      this.draw(map); // DRAW THE MAP
     });
   }
 
@@ -36,7 +56,7 @@ class Main {
     this.fps++;
     this.setInfo();
     this.players.forEach(async (p) => {
-      p.draw();
+      p.move();
     });
     if (this.fps % 5 === 0) {
       map.set("players", this.players);
