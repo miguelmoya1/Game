@@ -24,21 +24,7 @@ class Main {
     this.mainPlayer = await new Player(this.mainPlayerID, true).init(
       '../assets/Pink_Monster/Pink_Monster.png'
     );
-
-    const newPlayers = [];
-    for (let i = 0; i < 0; i++) {
-      newPlayers.push(
-        await new Player(
-          'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (Math.random() * 16) | 0,
-              v = c == 'x' ? r : (r & 0x3) | 0x8;
-            return v.toString(16);
-          }),
-          true
-        ).init('../assets/Pink_Monster/Pink_Monster.png')
-      );
-    }
-    this.players.push(this.mainPlayer, ...newPlayers);
+    this.players.push(this.mainPlayer);
     this.players.forEach((p, i) => p.setVar({ x: i * 20 }));
     this.setFPS();
     this.setMultiplayerAndDrawMap();
@@ -48,6 +34,7 @@ class Main {
     this.room.then((room) => {
       const map = room.map('players');
       room.subscribe(map, (obj) => {
+        console.log(obj.players);
         obj.players.forEach((p: { id: string }) => {
           if (p.id !== this.mainPlayerID) {
             const found = this.players.findIndex((pl) => pl.id === p.id) !== -1;

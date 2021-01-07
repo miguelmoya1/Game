@@ -24,6 +24,7 @@ export class Player {
     if (!this.image) {
       this.image = await Image.loadImage(url);
       document.body.appendChild(this.image);
+      this.image.style.transition = '0.1s';
     }
     this.height = this.image.height;
     this.width = this.image.width;

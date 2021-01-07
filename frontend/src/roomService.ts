@@ -1,7 +1,7 @@
 import { RoomService } from '@roomservice/browser';
 
 async function authCheck({ room }: any) {
-  const response = await fetch('http://192.168.100.141:8080/api/roomservice', {
+  const response = await fetch('http://localhost:8080/api/roomservice', {
     mode: 'cors',
     method: 'POST',
     headers: {
