@@ -9,7 +9,7 @@ export class Player {
   private width = 0;
   private height = 0;
   private speed = 8;
-  private floor = 995;
+  private floor = 695;
   private firstJump = 0;
   private jumpSize = 20;
   private jumping = false;

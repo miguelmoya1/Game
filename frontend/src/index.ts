@@ -57,7 +57,7 @@ class Main {
     this.players.forEach(async (p) => {
       p.move();
     });
-    if (this.fps % 5 === 0) {
+    if (this.fps % 20 === 0) {
       map.set('players', this.players);
     }
     requestAnimationFrame(() => this.draw(map));
