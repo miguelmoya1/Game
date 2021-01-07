@@ -24,7 +24,22 @@ class Main {
     this.mainPlayer = await new Player(this.mainPlayerID, true).init(
       '../assets/Pink_Monster/Pink_Monster.png'
     );
-    this.players.push(this.mainPlayer);
+
+    const newPlayers = [];
+    for (let i = 0; i < 0; i++) {
+      newPlayers.push(
+        await new Player(
+          'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (Math.random() * 16) | 0,
+              v = c == 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+          }),
+          true
+        ).init('../assets/Pink_Monster/Pink_Monster.png')
+      );
+    }
+    this.players.push(this.mainPlayer, ...newPlayers);
+    this.players.forEach((p, i) => p.setVar({ x: i * 20 }));
     this.setFPS();
     this.setMultiplayerAndDrawMap();
   }
