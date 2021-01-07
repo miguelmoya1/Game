@@ -33,7 +33,6 @@ app.post("/api/roomservice", async (req, res) => {
   });
 
   const response = await r.json();
-  console.log(response);
   return res.json(response);
 });
 app.listen(port, () => {
