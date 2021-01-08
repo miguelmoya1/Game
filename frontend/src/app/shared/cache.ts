@@ -19,8 +19,8 @@ class NCache<T> {
     return this._data;
   }
 
-  private cacheExpire(cacheTime?: number) {
-    return this.lastUpdate?.getTime() - new Date().getTime() >= cacheTime;
+  private cacheExpire(cacheTime: number) {
+    return this.lastUpdate!.getTime() - new Date().getTime() >= cacheTime;
   }
 }
 

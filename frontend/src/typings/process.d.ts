@@ -8,3 +8,7 @@ declare module 'remote' {
 declare module 'localbus' {
   type LocalBus<T> = any;
 }
+
+declare module 'RoomClient' {
+  type MapClient<T> = any;
+}

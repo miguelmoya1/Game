@@ -1,37 +1,23 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { RoomService } from '@roomservice/browser';
+import { AuthResponse } from '@roomservice/browser/dist/types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RsService {
-  public service: any;
+  public service: RoomService<any>;
 
-  constructor() {
+  constructor(private httpClient: HttpClient) {
     this.service = new RoomService({
-      auth: this.authCheck,
+      auth: ({ room }: any) =>
+        this.httpClient
+          .post<AuthResponse>('http://localhost:3000/user/room', room)
+          .toPromise(),
       ctx: {},
     });
 
     console.log(this.service);
-  }
-
-  public async authCheck({ room }: any) {
-    const response = await fetch('http://localhost:3000/api/roomservice', {
-      mode: 'cors',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        room,
-      }),
-    });
-
-    if (response.status === 401) {
-      throw new Error('Unauthorized!');
-    }
-
-    return await response.json();
   }
 }

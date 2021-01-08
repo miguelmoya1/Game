@@ -32,7 +32,7 @@ export class UserController {
     throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
   }
 
-  @Get('/join/:room')
+  @Get('/join')
   // @UseGuards(IsLoggedGuard)
   public async joinRoom(@Req() req: IRequest, @Body() room: string) {
     const API_KEY = 'k6ZIUsMJjyNjjCyjjTRrw';

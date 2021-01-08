@@ -13,5 +13,6 @@ export class NotLogged implements CanActivate {
     if (!logged) {
       return true;
     }
+    return false;
   }
 }
