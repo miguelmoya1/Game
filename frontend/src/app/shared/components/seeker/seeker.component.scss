@@ -1,0 +1,21 @@
+.floating {
+  position: absolute;
+  z-index: 999;
+  margin: 48px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+
+  button.back-button {
+    background-color: #333333d0;
+
+    mat-icon {
+      color: white;
+    }
+  }
+
+  &.left {
+    left: 0;
+  }
+}
