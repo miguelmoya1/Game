@@ -8,7 +8,7 @@ import { Interceptor } from './shared/interceptor/interceptor.service';
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+  imports: [HttpClientModule, BrowserModule, AppRoutingModule],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: Interceptor, multi: true },
   ],

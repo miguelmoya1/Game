@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  server_url: 'http://192.168.18.3:3000',
+  server_url: 'http://localhost:3000',
   token_name: 'id_token',
   go_to_name: 'go_to',
   logged_as: 'logged_as',

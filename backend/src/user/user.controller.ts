@@ -16,6 +16,7 @@ import { IUser } from '../../../global';
 import { encode } from '../auth/auth';
 import { IsLoggedGuard } from '../shared/guards/isLogged.guard';
 import { IRequest } from '../shared/interfaces/request';
+import axios from 'axios';
 
 @Controller('user')
 export class UserController {
@@ -32,11 +33,11 @@ export class UserController {
     throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
   }
 
-  @Get('/join')
+  @Post('/join')
   // @UseGuards(IsLoggedGuard)
-  public async joinRoom(@Req() req: IRequest, @Body() room: string) {
+  public async joinRoom(@Req() req: IRequest, @Body() room: { room: string }) {
     const API_KEY = 'k6ZIUsMJjyNjjCyjjTRrw';
-    const user = await this.userService.get(req.user.id!);
+    // const user = await this.userService.get(req.user.id!);
 
     // Check if this is a valid user
     const userID = '1';
@@ -44,31 +45,43 @@ export class UserController {
     const resources = [
       {
         object: 'room',
-        room,
+        room: room.room,
         permission: 'join',
       },
     ];
 
-    const r = await fetch('https://super.roomservice.dev/provision', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer: ${API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        user: userID,
-        resources: resources,
-      }),
-    });
-
-    const response = await r.json();
-    console.log(response);
-    return response;
-
-    if (user) {
-      return user;
+    try {
+      const response = await axios.post(
+        'https://super.roomservice.dev/provision',
+        JSON.stringify({
+          user: userID,
+          resources: resources,
+        }),
+        {
+          headers: {
+            Authorization: `Bearer: ${API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log(response);
+      return response.data;
+    } catch (e) {
+      console.error(e);
     }
-    throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+    // const r = await fetch('https://super.roomservice.dev/provision', {
+    //   method: 'POST',
+    //   headers: {
+    //     Authorization: `Bearer: ${API_KEY}`,
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     user: userID,
+    //     resources: resources,
+    //   }),
+    // });
+
+    // const response = await r.json();
   }
 
   @Get('/all')

@@ -11,13 +11,14 @@ export class RsService {
 
   constructor(private httpClient: HttpClient) {
     this.service = new RoomService({
-      auth: ({ room }: any) =>
-        this.httpClient
-          .post<AuthResponse>('http://localhost:3000/user/room', room)
-          .toPromise(),
+      auth: ({ room }: any) => {
+        console.log(room);
+        return this.httpClient
+          .post<AuthResponse>('/user/join', { room })
+          .toPromise();
+      },
+
       ctx: {},
     });
-
-    console.log(this.service);
   }
 }

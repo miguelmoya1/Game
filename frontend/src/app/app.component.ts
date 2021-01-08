@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { RoomClient } from '@roomservice/browser';
-import { RsService } from './rs.service';
 
 @Component({
   selector: 'app-root',
@@ -9,14 +7,7 @@ import { RsService } from './rs.service';
 })
 export class AppComponent implements OnInit {
   title = 'game';
-  room!: RoomClient;
-  constructor(private rsService: RsService) {}
+  constructor() {}
 
-  async ngOnInit() {
-    this.room = await this.rsService.service.room('game');
-    const map = this.room.map('players');
-    this.room.subscribe(map, (a) => {
-      console.log(a);
-    });
-  }
+  async ngOnInit() {}
 }
