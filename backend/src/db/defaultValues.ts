@@ -1,5 +1,4 @@
-import { ICategory, IClient, ISchedule, IUser } from '../../../global';
-import { Days } from '../shared/tools/tools';
+import { IUser } from '../../../global';
 import { User } from '../user/user.model';
 import { PROD } from '../app.constants';
 import * as bcrypt from 'bcryptjs';
@@ -8,7 +7,7 @@ import * as faker from 'faker';
 
 export const setDefaultValues = async () => {
   if (!PROD) {
-    const users = await createUsers();
+    await createUsers();
   }
 };
 

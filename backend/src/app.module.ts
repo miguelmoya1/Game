@@ -10,9 +10,10 @@ import { UserModule } from './user/user.module';
 import { FileController } from './file/file.controller';
 import { FileModule } from './file/file.module';
 import { DbService } from './db/db.service';
+import { GameModule } from './game/game.module';
 
 @Module({
-  imports: [UserModule, FileModule],
+  imports: [UserModule, FileModule, GameModule],
   controllers: [AppController, FileController],
   providers: [DbService],
 })

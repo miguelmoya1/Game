@@ -3,4 +3,11 @@ main {
   background-size: 100% 100%;
   background-repeat: repeat-x;
   height: 100vh;
+  position: relative;
+
+  .fps {
+    position: absolute;
+    right: 24px;
+    top: 24px;
+  }
 }

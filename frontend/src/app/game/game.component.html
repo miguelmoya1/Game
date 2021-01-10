@@ -1,3 +1,9 @@
 <main>
-  <app-player></app-player>
+  <ng-container *ngIf="false; else login">
+    <div class="fps">{{FPS}}</div>
+    <app-player #player></app-player>
+  </ng-container>
+  <ng-template #login>
+    <app-join-game></app-join-game>
+  </ng-template>
 </main>
