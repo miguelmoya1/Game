@@ -1,5 +1,5 @@
 <main>
-  <ng-container *ngIf="false; else login">
+  <ng-container *ngIf="hasRoom; else login">
     <div class="fps">{{FPS}}</div>
     <app-player #player></app-player>
   </ng-container>

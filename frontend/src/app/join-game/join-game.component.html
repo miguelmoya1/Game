@@ -1,8 +1,12 @@
 <div class="content">
-  <ng-container *ngIf="false;else joinGame">
-
-  </ng-container>
-  <ng-template #joinGame>
+  <ng-container *ngIf="!isLogged; else joinGame">
     <app-login></app-login>
+  </ng-container>
+
+  <ng-template #joinGame>
+    <mat-card>
+      <button mat-button>CREATE GAME</button>
+      <button mat-button (click)="joinGames()">JOIN GAME</button>
+    </mat-card>
   </ng-template>
 </div>

@@ -20,7 +20,7 @@ class NCache<T> {
   }
 
   private cacheExpire(cacheTime: number) {
-    if (!this.lastUpdate) return false;
+    if (!this.lastUpdate) return true;
     return this.lastUpdate!.getTime() - new Date().getTime() >= cacheTime;
   }
 }

@@ -17,7 +17,7 @@ export class AuthService {
   logged = false;
   cacheIsLogged = new Cache<boolean>();
   logged$: EventEmitter<boolean> = new EventEmitter<boolean>();
-  SERVER_URL = '/client';
+  SERVER_URL = '/user';
 
   constructor(private httpClient: HttpClient, private router: Router) {}
 

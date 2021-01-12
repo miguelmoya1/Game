@@ -5,5 +5,5 @@ export interface IGame extends IBase {
   password?: string;
   private?: boolean;
 
-  Users: IUser[];
+  Users?: IUser[];
 }

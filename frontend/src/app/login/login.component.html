@@ -1,20 +1,18 @@
-<div class="container">
-  <mat-card>
-    <form *ngIf="form" [formGroup]="form" class="input-container">
-      <mat-form-field>
-        <mat-label>CORREO</mat-label>
-        <input formControlName="email" matInput>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>CONTRASEÑA</mat-label>
-        <input formControlName="password" type="password" matInput>
-      </mat-form-field>
-    </form>
+<mat-card>
+  <form *ngIf="form" [formGroup]="form" class="input-container">
+    <mat-form-field>
+      <mat-label>CORREO</mat-label>
+      <input formControlName="email" matInput>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>CONTRASEÑA</mat-label>
+      <input formControlName="password" type="password" matInput>
+    </mat-form-field>
+  </form>
 
-    <div class="buttons-container">
-      <button mat-button (click)="login()" fill="clear">
-        Sign In
-      </button>
-    </div>
-  </mat-card>
-</div>
+  <div class="buttons-container">
+    <button mat-button (click)="login()" fill="clear">
+      Sign In
+    </button>
+  </div>
+</mat-card>

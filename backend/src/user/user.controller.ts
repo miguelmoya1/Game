@@ -21,85 +21,6 @@ import { IRequest } from '../shared/interfaces/request';
 export class UserController {
   constructor(protected userService: UserService) {}
 
-  @Get()
-  @UseGuards(IsLoggedGuard)
-  public async getUserLogged(@Req() req: IRequest) {
-    const user = await this.userService.get(req.user.id!);
-
-    if (user) {
-      return user;
-    }
-    throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
-  }
-
-  @Get('/all')
-  @UseGuards(IsLoggedGuard)
-  public async getAllUsers(@Req() req: IRequest) {
-    const user = await this.userService.get(req.user.id!);
-    if (user.root) {
-      return await this.userService.get();
-    }
-    throw new HttpException(
-      'No tienes permisos para ver estos datos',
-      HttpStatus.UNAUTHORIZED
-    );
-  }
-
-  @Put()
-  @UseGuards(IsLoggedGuard)
-  public async update(@Req() req: IRequest, @Body() user: IUser) {
-    const userLogged = await this.userService.get(req.user.id!);
-
-    if (userLogged) {
-      return this.userService.edit(user, req.user.id!);
-    }
-    throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
-  }
-
-  @Put('/device/info')
-  @UseGuards(IsLoggedGuard)
-  public async setPhoneInfo(@Req() req: IRequest, @Body() user: IUser) {
-    return this.userService.setPhoneInfo(user, req.user.id!);
-  }
-
-  @Put('/admin')
-  @UseGuards(IsLoggedGuard)
-  public async updateAdmin(@Req() req: IRequest, @Body() user: IUser) {
-    const userLogged = await this.userService.get(req.user.id!);
-
-    if (userLogged && userLogged.root) {
-      return this.userService.edit(user, user.id!);
-    }
-    throw new HttpException(
-      'No tienes permisos para ver estos datos',
-      HttpStatus.UNAUTHORIZED
-    );
-  }
-
-  @Get('/:id')
-  @UseGuards(IsLoggedGuard)
-  public async getUser(@Req() req: IRequest, @Param('id') id: string) {
-    const user = await this.userService.get(req.user.id!);
-
-    if (user && user.root) {
-      return await this.userService.get(id);
-    }
-    throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
-  }
-
-  @Delete('/:id')
-  @UseGuards(IsLoggedGuard)
-  public async delete(@Req() req: IRequest, @Param('id') id: string) {
-    const user = await this.userService.get(req.user.id!);
-    if (user.root) {
-      return await this.userService.delete(id);
-    }
-    throw new HttpException(
-      'No tienes permisos para ver estos datos',
-      HttpStatus.UNAUTHORIZED
-    );
-  }
-
   //////////////////////
   // LOGIN Y REGISTRO //
   //////////////////////
@@ -134,5 +55,84 @@ export class UserController {
     return {
       token: encode(await this.userService.rehydrate(req.user)),
     };
+  }
+
+  @Get()
+  @UseGuards(IsLoggedGuard)
+  public async getUserLogged(@Req() req: IRequest) {
+    const user = await this.userService.get(req.user.id!);
+
+    if (user) {
+      return user;
+    }
+    throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+  }
+
+  @Get('/all')
+  @UseGuards(IsLoggedGuard)
+  public async getAllUsers(@Req() req: IRequest) {
+    const user = await this.userService.get(req.user.id!);
+    if (user.root) {
+      return await this.userService.get();
+    }
+    throw new HttpException(
+      'No tienes permisos para ver estos datos',
+      HttpStatus.UNAUTHORIZED
+    );
+  }
+
+  @Get('/:id')
+  @UseGuards(IsLoggedGuard)
+  public async getUser(@Req() req: IRequest, @Param('id') id: string) {
+    const user = await this.userService.get(req.user.id!);
+
+    if (user && user.root) {
+      return await this.userService.get(id);
+    }
+    throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+  }
+
+  @Put()
+  @UseGuards(IsLoggedGuard)
+  public async update(@Req() req: IRequest, @Body() user: IUser) {
+    const userLogged = await this.userService.get(req.user.id!);
+
+    if (userLogged) {
+      return this.userService.edit(user, req.user.id!);
+    }
+    throw new HttpException('Usuario no encontrado', HttpStatus.NOT_FOUND);
+  }
+
+  @Put('/device/info')
+  @UseGuards(IsLoggedGuard)
+  public async setPhoneInfo(@Req() req: IRequest, @Body() user: IUser) {
+    return this.userService.setPhoneInfo(user, req.user.id!);
+  }
+
+  @Put('/admin')
+  @UseGuards(IsLoggedGuard)
+  public async updateAdmin(@Req() req: IRequest, @Body() user: IUser) {
+    const userLogged = await this.userService.get(req.user.id!);
+
+    if (userLogged && userLogged.root) {
+      return this.userService.edit(user, user.id!);
+    }
+    throw new HttpException(
+      'No tienes permisos para ver estos datos',
+      HttpStatus.UNAUTHORIZED
+    );
+  }
+
+  @Delete('/:id')
+  @UseGuards(IsLoggedGuard)
+  public async delete(@Req() req: IRequest, @Param('id') id: string) {
+    const user = await this.userService.get(req.user.id!);
+    if (user.root) {
+      return await this.userService.delete(id);
+    }
+    throw new HttpException(
+      'No tienes permisos para borrar estos datos',
+      HttpStatus.UNAUTHORIZED
+    );
   }
 }
