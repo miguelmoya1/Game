@@ -5,8 +5,17 @@
 
   <ng-template #joinGame>
     <mat-card>
-      <button mat-button>CREATE GAME</button>
-      <button mat-button (click)="joinGames()">JOIN GAME</button>
+      <button mat-button (click)="createGame()">CREATE GAME</button>
+
+      <div class="join">
+        <form *ngIf="form" [formGroup]="form" class="input-container">
+          <mat-form-field>
+            <mat-label>CODE</mat-label>
+            <input formControlName="password" matInput>
+          </mat-form-field>
+        </form>
+        <button mat-button (click)="joinGames()">JOIN GAME</button>
+      </div>
     </mat-card>
   </ng-template>
 </div>

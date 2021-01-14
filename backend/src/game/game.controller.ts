@@ -1,40 +1,59 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import axios from 'axios';
+import { IGame } from '../../../global';
 import { IsLoggedGuard } from '../shared/guards/isLogged.guard';
 import { IRequest } from '../shared/interfaces/request';
-import { User } from '../user/user.model';
-import { UserService } from '../user/user.service';
 import { Game } from './game.model';
 
 @Controller('game')
+@UseGuards(IsLoggedGuard)
 export class GameController {
-  constructor(private userService: UserService) {}
+  @Post('/')
+  public async createGame(@Req() req: IRequest, @Body() body: IGame) {
+    let game: Game;
 
-  @Get('/join')
-  @UseGuards(IsLoggedGuard)
-  public async join(@Req() req: IRequest) {
-    const room = Game.findOne({
-      where: { userID: req.user.id! } as any,
-      include: [User as any],
-    });
-    console.log(room);
-    return room;
+    if (!body.password) {
+      game = await Game.create({
+        ...body,
+        password: this.getRandomString().toLocaleUpperCase(),
+      });
+      await game.setUser(req.user.id);
+    } else {
+      game = (await Game.findOne({ where: { password: body.password } }))!;
+    }
+    console.log(game);
+    if (!game) {
+      throw new HttpException('Room not found!', HttpStatus.NOT_FOUND);
+    }
+    return this.joinRoom(game, req.user.id!);
   }
 
-  @Post('/join')
-  @UseGuards(IsLoggedGuard)
-  public async joinRoom(@Req() req: IRequest, @Body() room: { room: string }) {
+  private getRandomString(length = 6) {
+    var randomChars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    for (var i = 0; i < length; i++) {
+      result += randomChars.charAt(
+        Math.floor(Math.random() * randomChars.length)
+      );
+    }
+    return result;
+  }
+
+  private async joinRoom(game: Game, userID: string) {
     const API_KEY = 'k6ZIUsMJjyNjjCyjjTRrw';
-    console.log(req.user);
-    const user = await this.userService.get(req.user.id!);
-
-    // Check if this is a valid user
-    const userID = user.id;
-
     const resources = [
       {
+        room: game.password,
         object: 'room',
-        room: room.room,
         permission: 'join',
       },
     ];
@@ -53,7 +72,7 @@ export class GameController {
           },
         }
       );
-      return response.data;
+      return { ...response.data, password: game.password };
     } catch (e) {
       console.error(e);
     }
