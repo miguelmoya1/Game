@@ -8,8 +8,8 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 export class PlayerComponent implements OnInit {
   public id!: string;
   @Input() hasMoveLogic = true;
-  private x = 0;
-  private y = 0;
+  private x = window.innerWidth / 2;
+  private y = window.innerHeight / 2 + window.innerHeight / 4;
   private width = 32;
   private height = 32;
   private speed = 2;

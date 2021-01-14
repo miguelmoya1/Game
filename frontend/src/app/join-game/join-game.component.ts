@@ -18,7 +18,7 @@ export class JoinGameComponent implements OnInit {
     private gameService: GameService
   ) {
     this.form = new FormGroup({
-      password: new FormControl('123456', [
+      password: new FormControl('PDNCQU', [
         Validators.minLength(6),
         Validators.required,
       ]),

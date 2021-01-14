@@ -29,6 +29,7 @@ export class GameComponent implements OnInit {
   private async setGame() {
     this.runGame();
     this.setFPS();
+    this.gameService.getPlayers(this.roomID);
     const map = (await this.rsService.getRoom(this.roomID)).map('players');
     (await this.rsService.getRoom('game')).subscribe(map, (a) => {
       console.log(a);

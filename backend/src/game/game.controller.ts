@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -16,7 +18,14 @@ import { Game } from './game.model';
 @Controller('game')
 @UseGuards(IsLoggedGuard)
 export class GameController {
-  @Post('/')
+  @Get('/players/:id')
+  public async getPlayersForGame(@Param('id') id: string) {
+    const game = await Game.findOne({ where: { password: id } });
+    const users = game?.getUsers();
+    console.log(users);
+  }
+
+  @Post()
   public async createGame(@Req() req: IRequest, @Body() body: IGame) {
     let game: Game;
 

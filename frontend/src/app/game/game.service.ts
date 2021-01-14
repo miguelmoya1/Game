@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { EventEmitter, Injectable } from '@angular/core';
 import { tap } from 'rxjs/operators';
-import { IGame } from '../../../../global';
+import { IGame, IUser } from '../../../../global';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +16,10 @@ export class GameService {
 
   public getRoomID() {
     return localStorage.getItem('roomID');
+  }
+
+  public getPlayers(code: string) {
+    return this.httpClient.get<IUser[]>(`/game/players/${code}`).toPromise();
   }
 
   public getGame(game: IGame) {
