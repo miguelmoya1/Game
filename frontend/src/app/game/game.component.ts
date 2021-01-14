@@ -11,22 +11,28 @@ import { GameService } from './game.service';
 export class GameComponent implements OnInit {
   public FPS = 0;
   public _fps = 0;
+  public hasRoom = false;
+  public roomID!: string;
 
   @ViewChildren('player') player!: QueryList<PlayerComponent>;
-  public hasRoom = false;
 
   constructor(private rsService: RsService, private gameService: GameService) {}
 
   async ngOnInit() {
-    this.gameService.joinRoom$.subscribe(
-      (hasRoom: boolean) => (this.hasRoom = hasRoom)
-    );
-    const map = (await this.rsService.getRoom('game')).map('players');
+    this.gameService.joinRoom$.subscribe((hasRoom: boolean) => {
+      this.roomID = this.gameService.getRoomID()!;
+      this.hasRoom = hasRoom;
+      this.setGame();
+    });
+  }
+
+  private async setGame() {
+    this.runGame();
+    this.setFPS();
+    const map = (await this.rsService.getRoom(this.roomID)).map('players');
     (await this.rsService.getRoom('game')).subscribe(map, (a) => {
       console.log(a);
     });
-    this.runGame();
-    this.setFPS();
   }
 
   private async runGame() {

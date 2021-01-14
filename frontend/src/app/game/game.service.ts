@@ -14,14 +14,16 @@ export class GameService {
     localStorage.setItem('roomID', roomID);
   }
 
-  public getRoomID() {}
+  public getRoomID() {
+    return localStorage.getItem('roomID');
+  }
 
   public getGame(game: IGame) {
     return this.httpClient
-      .post<{ room: string; userID: string; password: string }>('/game', game)
+      .post<IGame>('/game', game)
       .pipe(
         tap((r) => {
-          this.setRoomID(r.password);
+          this.setRoomID(r.password!);
           this.joinRoom$.emit(true);
         })
       )

@@ -29,31 +29,27 @@ export class GameController {
     } else {
       game = (await Game.findOne({ where: { password: body.password } }))!;
     }
-    console.log(game);
+
     if (!game) {
       throw new HttpException('Room not found!', HttpStatus.NOT_FOUND);
     }
-    return this.joinRoom(game, req.user.id!);
+    return game;
   }
 
-  private getRandomString(length = 6) {
-    var randomChars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var result = '';
-    for (var i = 0; i < length; i++) {
-      result += randomChars.charAt(
-        Math.floor(Math.random() * randomChars.length)
-      );
-    }
-    return result;
-  }
-
-  private async joinRoom(game: Game, userID: string) {
+  @Post('/join')
+  @UseGuards(IsLoggedGuard)
+  public async joinRoom(@Req() req: IRequest, @Body() room: { room: string }) {
     const API_KEY = 'k6ZIUsMJjyNjjCyjjTRrw';
+    console.log(req.user);
+    const user = req.user;
+
+    // Check if this is a valid user
+    const userID = user.id;
+
     const resources = [
       {
-        room: game.password,
         object: 'room',
+        room: room.room,
         permission: 'join',
       },
     ];
@@ -72,9 +68,21 @@ export class GameController {
           },
         }
       );
-      return { ...response.data, password: game.password };
+      return response.data;
     } catch (e) {
       console.error(e);
     }
+  }
+
+  private getRandomString(length = 6) {
+    var randomChars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var result = '';
+    for (var i = 0; i < length; i++) {
+      result += randomChars.charAt(
+        Math.floor(Math.random() * randomChars.length)
+      );
+    }
+    return result;
   }
 }
