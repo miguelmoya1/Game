@@ -39,6 +39,8 @@ export class GameController {
       game = (await Game.findOne({ where: { password: body.password } }))!;
     }
 
+    await game.addUser(req.user.id!);
+
     if (!game) {
       throw new HttpException('Room not found!', HttpStatus.NOT_FOUND);
     }

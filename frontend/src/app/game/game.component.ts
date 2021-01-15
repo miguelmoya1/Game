@@ -5,7 +5,7 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { RoomClient } from '@roomservice/browser';
+import { PresenceClient, RoomClient } from '@roomservice/browser';
 import { MapClient } from 'RoomClient';
 import { IUser } from '../../../../global';
 import { PlayerComponent } from '../player/player.component';
@@ -41,33 +41,31 @@ export class GameComponent implements OnInit {
 
   async ngOnInit() {
     this.gameService.joinRoom$.subscribe((hasRoom: boolean) => {
-      this.roomID = this.gameService.getRoomID()!;
       this.hasRoom = hasRoom;
       this.setGame();
     });
-    this.user = await this.userService.getMyUser();
     this.gameService.checkJoined();
   }
 
   private async setGame() {
     this.setFPS();
+    this.user = await this.userService.getMyUser();
+    this.roomID = this.gameService.getRoomID()!;
 
-    this.users = await this.gameService.getPlayers(this.roomID);
+    this.setUsersInRoom();
     this.room = await this.rsService.getRoom(this.roomID);
-    this.map = this.room.map(this.user.id!);
+    this.map = this.room.map('players');
+
+    await this.getMovePlayers();
 
     this.runGame();
-    await this.movePlayers();
   }
 
   private async runGame() {
     this._fps++;
-    // if (this.player) {
     if (this.player?.move()) {
-      console.log(this.player.getPosition());
-      this.map.set(this.player.id, this.player.getPosition());
+      this.map.set(this.user.id, this.player.getPosition());
     }
-    // }
     requestAnimationFrame(() => this.runGame());
   }
 
@@ -78,12 +76,21 @@ export class GameComponent implements OnInit {
     }, 1000);
   }
 
-  async movePlayers() {
-    this.players.forEach((p) => {
-      const map = this.room.map<any>(p.id!);
-      this.room.subscribe(map, (a) => {
-        console.log('entra', a);
+  private async getMovePlayers() {
+    const map = this.room.map<any>('players');
+    this.room.subscribe(map, (players) => {
+      Object.keys(players).forEach((playerID) => {
+        const user = this.users.find((user) => user.id === playerID);
+        if (user) {
+          this.players
+            .find((p) => p.id === playerID)
+            ?.setPosition(players[playerID]);
+        }
       });
     });
+  }
+
+  private async setUsersInRoom() {
+    this.users = await this.gameService.getPlayers(this.roomID);
   }
 }
