@@ -1,4 +1,12 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'app-player',
@@ -6,8 +14,6 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
   styleUrls: ['./player.component.scss'],
 })
 export class PlayerComponent implements OnInit {
-  public id!: string;
-  @Input() hasMoveLogic = true;
   private x = window.innerWidth / 2;
   private y = window.innerHeight / 2 + window.innerHeight / 4;
   private width = 32;
@@ -16,11 +22,13 @@ export class PlayerComponent implements OnInit {
   private map: any = [];
   public imageFile = '../assets/Pink_Monster/Pink_Monster.png';
 
+  @Input() hasMoveLogic = true;
+  @Input() id?: string;
   @ViewChild('image') image!: ElementRef<HTMLImageElement>;
 
   constructor() {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     if (this.hasMoveLogic) {
       document.addEventListener('keydown', (e) => {
         let key: number = e.key as any;
@@ -77,5 +85,14 @@ export class PlayerComponent implements OnInit {
 
   public getStyle() {
     return { top: `${this.y}px`, left: `${this.x}px` };
+  }
+
+  public setPosition(move: { x: number; y: number }) {
+    this.x = move.x;
+    this.y = move.y;
+  }
+
+  public getPosition() {
+    return { x: this.x, y: this.y };
   }
 }

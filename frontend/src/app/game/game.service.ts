@@ -14,6 +14,12 @@ export class GameService {
     localStorage.setItem('roomID', roomID);
   }
 
+  public checkJoined() {
+    if (this.getRoomID()) {
+      this.joinRoom$.emit(true);
+    }
+  }
+
   public getRoomID() {
     return localStorage.getItem('roomID');
   }

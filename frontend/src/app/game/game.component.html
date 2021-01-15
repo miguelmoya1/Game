@@ -1,6 +1,10 @@
 <main>
   <app-player #player></app-player>
 
+  <ng-container *ngIf="users">
+    <app-player #players *ngFor="let user of users" [id]="user.id!"></app-player>
+  </ng-container>
+
   <ng-container *ngIf="!hasRoom">
     <app-join-game></app-join-game>
   </ng-container>

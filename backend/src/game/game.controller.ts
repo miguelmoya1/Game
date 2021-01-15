@@ -21,8 +21,8 @@ export class GameController {
   @Get('/players/:id')
   public async getPlayersForGame(@Param('id') id: string) {
     const game = await Game.findOne({ where: { password: id } });
-    const users = game?.getUsers();
-    console.log(users);
+    const users = await game?.getUsers();
+    return users;
   }
 
   @Post()
@@ -48,8 +48,8 @@ export class GameController {
   @Post('/join')
   @UseGuards(IsLoggedGuard)
   public async joinRoom(@Req() req: IRequest, @Body() room: { room: string }) {
-    const API_KEY = 'k6ZIUsMJjyNjjCyjjTRrw';
-    console.log(req.user);
+    const API_KEY = 'rxxgjpg_qzGWh9sctkKn1';
+    // console.log(req.user);
     const user = req.user;
 
     // Check if this is a valid user

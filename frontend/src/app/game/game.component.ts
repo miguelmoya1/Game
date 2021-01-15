@@ -1,6 +1,16 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { RoomClient } from '@roomservice/browser';
+import { MapClient } from 'RoomClient';
+import { IUser } from '../../../../global';
 import { PlayerComponent } from '../player/player.component';
-import { RsService } from '../rs.service';
+import { RsService } from '../shared/services/rs.service';
+import { UserService } from '../shared/services/user.service';
 import { GameService } from './game.service';
 
 @Component({
@@ -14,9 +24,20 @@ export class GameComponent implements OnInit {
   public hasRoom = false;
   public roomID!: string;
 
-  @ViewChildren('player') player!: QueryList<PlayerComponent>;
+  public users!: IUser[];
+  public user!: IUser;
 
-  constructor(private rsService: RsService, private gameService: GameService) {}
+  private room!: RoomClient;
+  private map!: MapClient<any>;
+
+  @ViewChild('player') player!: PlayerComponent;
+  @ViewChildren('players') players!: QueryList<PlayerComponent>;
+
+  constructor(
+    private rsService: RsService,
+    private gameService: GameService,
+    private userService: UserService
+  ) {}
 
   async ngOnInit() {
     this.gameService.joinRoom$.subscribe((hasRoom: boolean) => {
@@ -24,21 +45,29 @@ export class GameComponent implements OnInit {
       this.hasRoom = hasRoom;
       this.setGame();
     });
+    this.user = await this.userService.getMyUser();
+    this.gameService.checkJoined();
   }
 
   private async setGame() {
-    this.runGame();
     this.setFPS();
-    this.gameService.getPlayers(this.roomID);
-    const map = (await this.rsService.getRoom(this.roomID)).map('players');
-    (await this.rsService.getRoom('game')).subscribe(map, (a) => {
-      console.log(a);
-    });
+
+    this.users = await this.gameService.getPlayers(this.roomID);
+    this.room = await this.rsService.getRoom(this.roomID);
+    this.map = this.room.map(this.user.id!);
+
+    this.runGame();
+    await this.movePlayers();
   }
 
   private async runGame() {
     this._fps++;
-    this.player.forEach((p) => p.move());
+    // if (this.player) {
+    if (this.player?.move()) {
+      console.log(this.player.getPosition());
+      this.map.set(this.player.id, this.player.getPosition());
+    }
+    // }
     requestAnimationFrame(() => this.runGame());
   }
 
@@ -47,5 +76,14 @@ export class GameComponent implements OnInit {
       this.FPS = this._fps;
       this._fps = 0;
     }, 1000);
+  }
+
+  async movePlayers() {
+    this.players.forEach((p) => {
+      const map = this.room.map<any>(p.id!);
+      this.room.subscribe(map, (a) => {
+        console.log('entra', a);
+      });
+    });
   }
 }

@@ -12,10 +12,10 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "importHelpers": true,
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "es2015",
+    "module": "es2020",
     "lib": ["es2018", "dom"]
   },
   "angularCompilerOptions": {
