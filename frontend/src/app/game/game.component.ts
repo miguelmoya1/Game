@@ -5,7 +5,7 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { PresenceClient, RoomClient } from '@roomservice/browser';
+import { RoomClient } from '@roomservice/browser';
 import { MapClient } from 'RoomClient';
 import { IUser } from '../../../../global';
 import { PlayerComponent } from '../player/player.component';

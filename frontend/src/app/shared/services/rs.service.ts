@@ -27,6 +27,4 @@ export class RsService {
     }
     return this.room[roomName];
   }
-
-  public emitMove(player: any) {}
 }

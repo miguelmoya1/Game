@@ -2,7 +2,7 @@
   <app-player #player></app-player>
 
   <ng-container *ngIf="users">
-    <app-player #players *ngFor="let user of users" [id]="user.id!"></app-player>
+    <app-player #players *ngFor="let user of users" [id]="user.id!" [hasMoveLogic]="false"></app-player>
   </ng-container>
 
   <ng-container *ngIf="!hasRoom">
